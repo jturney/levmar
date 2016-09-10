@@ -37,7 +37,6 @@ add_library(levmar
     src/lmbc.c
     src/lmblec.c
     src/lmbleic.c
-    #src/levmar.h
     src/misc.h
     src/compiler.h
     )
@@ -54,7 +53,7 @@ include_directories(
 
 set_target_properties(levmar PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC})
 if (${BUILD_SHARED_LIBS})
-    target_link_libraries(levmar PRIVATE ${LIBC_INTERJECT})
+    target_link_libraries(levmar PRIVATE ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES} ${LIBC_INTERJECT})
 endif()
 
 # <<<  Install  >>>
