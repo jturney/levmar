@@ -124,7 +124,6 @@ check_required_components(${PN})
 #-----------------------------------------------------------------------------
 if(NOT TARGET ${PN}::${PN})
     include("${CMAKE_CURRENT_LIST_DIR}/${PN}Targets.cmake")
-    add_library(${PN}::${PN} UNKNOWN IMPORTED)
     set_target_properties(${PN}::${PN} PROPERTIES
         IMPORTED_LOCATION                 "${_temp}"
         INTERFACE_INCLUDE_DIRECTORIES     "${${PN}_INCLUDE_DIRS}"
