@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////////
-// 
+//
 //  Levenberg - Marquardt non-linear minimization algorithm
 //  Copyright (C) 2004  Manolis Lourakis (lourakis at ics forth gr)
 //  Institute of Computer Science, Foundation for Research & Technology - Hellas
@@ -33,9 +33,9 @@
 #ifdef _MSC_VER
 #define LM_FINITE _finite // MSVC
 #elif defined(__ICC) || defined(__INTEL_COMPILER) || defined(__GNUC__)
-#define LM_FINITE finite // ICC, GCC
+#define LM_FINITE isfinite // ICC, GCC
 #else
-#define LM_FINITE finite // other than MSVC, ICC, GCC, let's hope this will work
+#define LM_FINITE isfinite // other than MSVC, ICC, GCC, let's hope this will work
 #endif
 
 #ifdef _MSC_VER
