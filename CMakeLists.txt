@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(levmar LANGUAGES C)
+project(levmar VERSION 2.6 LANGUAGES C)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
@@ -72,13 +72,19 @@ install(TARGETS
             ${CMAKE_INSTALL_LIBDIR}
         )
 
+# <<<  Export Interface  >>>
+
+target_compile_definitions(levmar INTERFACE USING_${PN})
+target_include_directories(levmar INTERFACE
+                           $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+
 # <<<  Export Config  >>>
 set(CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}/cmake/${PN}")
 configure_package_config_file(${PN}Config.cmake.in
                               "${CMAKE_CURRENT_BINARY_DIR}/${PN}Config.cmake"
                               INSTALL_DESTINATION ${CMAKECONFIG_INSTALL_DIR})
 write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PN}ConfigVersion.cmake
-                                 VERSION 1.2
+                                 VERSION ${${PN}_VERSION}
                                  COMPATIBILITY SameMajorVersion)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PN}Config.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/${PN}ConfigVersion.cmake

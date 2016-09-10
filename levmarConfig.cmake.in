@@ -124,11 +124,5 @@ check_required_components(${PN})
 #-----------------------------------------------------------------------------
 if(NOT TARGET ${PN}::${PN})
     include("${CMAKE_CURRENT_LIST_DIR}/${PN}Targets.cmake")
-    set_target_properties(${PN}::${PN} PROPERTIES
-        IMPORTED_LOCATION                 "${_temp}"
-        INTERFACE_INCLUDE_DIRECTORIES     "${${PN}_INCLUDE_DIRS}"
-        INTERFACE_COMPILE_DEFINITIONS     "USING_${PN}"
-        IMPORTED_LINK_INTERFACE_LANGUAGES "CXX"
-        INTERFACE_LINK_LIBRARIES          ${PN}::${PN})
 endif()
 
