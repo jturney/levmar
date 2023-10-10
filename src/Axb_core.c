@@ -96,6 +96,17 @@ extern int SYTRS(char *uplo, int *n, int *nrhs, LM_REAL *a, int *lda, int *ipiv,
 #define AX_EQ_B_BK LM_ADD_PREFIX(Ax_eq_b_BK)
 #define AX_EQ_B_PLASMA_CHOL LM_ADD_PREFIX(Ax_eq_b_PLASMA_Chol)
 
+static _Bool overflow_mul_int(int x, int y, int *result)
+{
+#ifdef __GNUC__
+  return __builtin_mul_overflow(x, y, result);
+#else
+  long long mul = (long long)x * (long long)y;
+  *result = (int)mul;
+  return (long long)*result != mul;
+#endif
+}
+
 /*
  * This function returns the solution of Ax = b
  *
@@ -140,7 +151,8 @@ register LM_REAL sum;
 #endif /* LINSOLVERS_RETAIN_MEMORY */
    
     /* calculate required memory size */
-    a_sz=m*m;
+    if(m <= 0 || overflow_mul_int(m, m, &a_sz))
+      return 0;
     tau_sz=m;
     r_sz=m*m; /* only the upper triangular part really needed */
     if(!nb){
@@ -304,9 +316,11 @@ register LM_REAL sum;
 	  }
       
     /* calculate required memory size */
-    a_sz=m*n;
+    if(m <= 0 || n <= 0 || overflow_mul_int(m, n, &a_sz))
+      return 0;
     tau_sz=n;
-    r_sz=n*n;
+    if(overflow_mul_int(n, n, &r_sz))
+      return 0;
     if(!nb){
       LM_REAL tmp;
 
@@ -466,7 +480,8 @@ int info, nrhs=1;
 #endif /* LINSOLVERS_RETAIN_MEMORY */
    
     /* calculate required memory size */
-    a_sz=m*m;
+    if(m <= 0 || overflow_mul_int(m, m, &a_sz))
+      return 0;
     tot_sz=a_sz;
 
 #ifdef LINSOLVERS_RETAIN_MEMORY
@@ -653,7 +668,8 @@ int info, nrhs=1;
     }
 
     /* calculate required memory size */
-    a_sz=m*m;
+    if(m <= 0 || overflow_mul_int(m, m, &a_sz))
+      return 0;
     tot_sz=a_sz;
 
 #ifdef LINSOLVERS_RETAIN_MEMORY
@@ -760,7 +776,8 @@ LM_REAL *a;
    
     /* calculate required memory size */
     ipiv_sz=m;
-    a_sz=m*m;
+    if(m <= 0 || overflow_mul_int(m, m, &a_sz))
+      return 0;
     tot_sz=a_sz*sizeof(LM_REAL) + ipiv_sz*sizeof(int); /* should be arranged in that order for proper doubles alignment */
 
 #ifdef LINSOLVERS_RETAIN_MEMORY
@@ -890,7 +907,8 @@ int info, rank, worksz, *iwork, iworksz;
   //worksz=m*(7*m+4); // min worksize for GESDD
 #endif
   iworksz=8*m;
-  a_sz=m*m;
+  if(m <= 0 || overflow_mul_int(m, m, &a_sz))
+    return 0;
   u_sz=m*m; s_sz=m; vt_sz=m*m;
 
   tot_sz=(a_sz + u_sz + s_sz + vt_sz + worksz)*sizeof(LM_REAL) + iworksz*sizeof(int); /* should be arranged in that order for proper doubles alignment */
@@ -1022,7 +1040,8 @@ int info, *ipiv, nrhs=1;
 
   /* calculate required memory size */
   ipiv_sz=m;
-  a_sz=m*m;
+  if(m <= 0 || overflow_mul_int(m, m, &a_sz))
+    return 0;
   if(!nb){
     LM_REAL tmp;
 
@@ -1161,7 +1180,8 @@ LM_REAL *a, *work, max, sum, tmp;
    
   /* calculate required memory size */
   idx_sz=m;
-  a_sz=m*m;
+  if(m <= 0 || overflow_mul_int(m, m, &a_sz))
+    return 0;
   work_sz=m;
   tot_sz=(a_sz+work_sz)*sizeof(LM_REAL) + idx_sz*sizeof(int); /* should be arranged in that order for proper doubles alignment */
 
